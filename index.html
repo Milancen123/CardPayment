@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stripe Payment Form Clone</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f8fa;
+        }
+        .payment-form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        #payment-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .card-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #6772e5;
+            box-shadow: 0 0 4px rgba(103, 114, 229, 0.5);
+        }
+        .card-icon {
+            width: 16px;
+            height: autos;
+            object-fit: cover;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #6772e5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #5469d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-form-container">
+        <form id="payment-form">
+            <label for="cardholder-name">Cardholder Name</label>
+            <input type="text" id="cardholder-name" placeholder="John Doe" required>
+
+            <label for="card-number">Card Number</label>
+            <div class="card-input-container">
+                <input
+                    type="text"
+                    id="card-number"
+                    maxlength="19"
+                    placeholder="1234 5678 9012 3456"
+                    required
+                >
+                <div id="card-icon-container">
+                    <img id="card-icon" class="card-icon" src="credit-card (1).png" alt="Card Icon" width="16px">
+                </div>
+            </div>
+
+            <label for="expiry-date">Expiry Date (MM/YY)</label>
+            <input
+                type="text"
+                id="expiry-date"
+                placeholder="MM/YY"
+                maxlength="5"
+                required
+            >
+
+            <label for="cvv">CVV</label>
+            <input type="number" id="cvv" maxlength="4" placeholder="123" required>
+
+            <label for="postal-code">Postal Code</label>
+            <input type="text" id="postal-code" placeholder="12345" required>
+
+            <button type="submit">Pay</button>
+        </form>
+    </div>
+
+    <script>
+        // Format card number input
+        document.getElementById('card-number').addEventListener('input', function (e) {
+            let input = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+            let formattedInput = '';
+
+            // Format card number in groups of 4 digits
+            for (let i = 0; i < input.length; i += 4) {
+                if (i + 4 < input.length) {
+                    formattedInput += input.substring(i, i + 4) + ' ';
+                } else {
+                    formattedInput += input.substring(i, input.length);
+                }
+            }
+            e.target.value = formattedInput.trim();
+
+            // Determine the card type
+            let cardType = '';
+            if (/^4/.test(input)) {
+                cardType = 'Visa';
+                document.getElementById('card-icon').src = 'visa (1).png'; // Visa logo
+            } else if (/^5[1-5]/.test(input) || /^2(2[2-9]|[3-7][0-9])/.test(input)) {
+                cardType = 'Mastercard';
+                document.getElementById('card-icon').src = 'card (1).png'; // Mastercard logo
+            } else {
+                cardType = 'Unknown Card Type';
+                document.getElementById('card-icon').src = 'credit-card (1).png'; // No image for unknown card type
+            }
+
+            console.log(`Detected Card Type: ${cardType}`);
+        });
+
+        // Format expiry date input
+        document.getElementById('expiry-date').addEventListener('input', function (e) {
+            let input = e.target.value.replace(/\D/g, ''); // Remove non-digit characters
+            if (input.length > 2) {
+                input = input.substring(0, 2) + '/' + input.substring(2, 4);
+            }
+            e.target.value = input;
+        });
+    </script>
+</body>
+</html>
